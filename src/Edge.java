@@ -1,7 +1,7 @@
 /**
  * Created by Sobercheg on 10/3/13.
  */
-public class Edge {
+public class Edge implements Comparable<Edge> {
     private int from;
     private int to;
     private int weight;
@@ -22,5 +22,10 @@ public class Edge {
 
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return Integer.compare(weight, o.weight);
     }
 }
