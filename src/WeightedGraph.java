@@ -9,16 +9,16 @@ public class WeightedGraph {
     private final List<Edge>[] edges;
     private final List<Edge>[] inboundEdges;
 
-    public WeightedGraph(int v) {
-        this.V = v;
+    public WeightedGraph(int V) {
+        this.V = V;
 
-        this.edges = (List<Edge>[]) new List[V];
-        for (int i = 0; i < V; i++) {
+        this.edges = (List<Edge>[]) new List[this.V];
+        for (int i = 0; i < this.V; i++) {
             edges[i] = new ArrayList<Edge>();
         }
 
-        this.inboundEdges = (List<Edge>[]) new List[V];
-        for (int i = 0; i < V; i++) {
+        this.inboundEdges = (List<Edge>[]) new List[this.V];
+        for (int i = 0; i < this.V; i++) {
             inboundEdges[i] = new ArrayList<Edge>();
         }
     }
@@ -30,6 +30,14 @@ public class WeightedGraph {
 
     public List<Edge> getEdges(int v) {
         return edges[v];
+    }
+
+    public List<Edge> getAllEdges() {
+        List<Edge> edgeList = new ArrayList<Edge>();
+        for (List<Edge> vertexEdges : edges) {
+            edgeList.addAll(vertexEdges);
+        }
+        return edgeList;
     }
 
     public List<Edge> getInboundEdges(int v) {
