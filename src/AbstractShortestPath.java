@@ -43,4 +43,9 @@ public class AbstractShortestPath implements ShortestPath {
         }
         return path;
     }
+
+    @Override
+    public int[] distances() {
+        return distances;
+    }
 }
