@@ -14,6 +14,13 @@ public class BellmanFordShortestPath extends AbstractShortestPath {
         }
     }
 
+    public boolean hasNegativeCycles() {
+        for (Edge edge: graph.getAllEdges()) {
+            if (distances[edge.getTo()] > distances[edge.getFrom()] + edge.getWeight()) return true;
+        }
+        return false;
+    }
+
     private void relax(Edge edge) {
         int v = edge.getFrom();
         int w = edge.getTo();
