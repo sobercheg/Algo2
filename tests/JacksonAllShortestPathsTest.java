@@ -9,6 +9,8 @@ public class JacksonAllShortestPathsTest {
         test.basic();
     }
 
+    // the test just shows results and does not assert anything.
+    // So, it does not fail if the logic is incorrect!
     private void basic() {
         WeightedGraph graph = new WeightedGraph(4);
         graph.addEdge(new Edge(0,1, -1));
