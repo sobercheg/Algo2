@@ -17,8 +17,17 @@ public class DijkstraShortestPath extends AbstractShortestPath {
         this.queue = new PriorityQueue<VertexMarker>(V);
 
         queue.add(markerMap.get(source));
+        int counter = 0;
         while (!queue.isEmpty()) {
-            relax(queue.poll());
+            counter++;
+//            if (counter % 100 == 0)
+//                System.out.println("Dijkstra iteration [" + counter + "], queue size = [" + queue.size() + "]");
+            VertexMarker vertexMarker = queue.poll();
+            if (vertexMarker.getDistance() == Integer.MAX_VALUE) {
+                System.out.println("Inaccessible vertices from [" + vertexMarker.getVertex() + "]");
+                break;
+            }
+            relax(vertexMarker);
         }
     }
 

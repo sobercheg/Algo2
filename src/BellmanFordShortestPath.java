@@ -24,6 +24,7 @@ public class BellmanFordShortestPath extends AbstractShortestPath {
     private void relax(Edge edge) {
         int v = edge.getFrom();
         int w = edge.getTo();
+        if (distances[v] == Integer.MAX_VALUE) return;
         if (distances[w] > distances[v] + edge.getWeight()) {
             distances[w] = distances[v] + edge.getWeight();
             edgeTo[w] = edge;
