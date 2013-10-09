@@ -1,3 +1,5 @@
+package shortestpath;
+
 /**
  * Created by Sobercheg on 10/3/13.
  */

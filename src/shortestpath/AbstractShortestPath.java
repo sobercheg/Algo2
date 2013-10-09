@@ -1,7 +1,7 @@
+package shortestpath;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.PriorityQueue;
 
 /**
  * Created by Sobercheg on 10/4/13.

@@ -1,4 +1,4 @@
-import java.util.*;
+package shortestpath;
 
 /**
  * Created by Sobercheg on 10/4/13.

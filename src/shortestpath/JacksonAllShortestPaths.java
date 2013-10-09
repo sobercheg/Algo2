@@ -1,17 +1,15 @@
-import java.io.File;
+package shortestpath;
+
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 /**
  * Created by Sobercheg on 10/3/13.
  */
 public class JacksonAllShortestPaths {
 
-    private final WeightedGraph graph;
     private final int[][] allShortestPaths;
 
     public JacksonAllShortestPaths(WeightedGraph graph) {
-        this.graph = graph;
         this.allShortestPaths = new int[graph.getV()][graph.getV()];
 
         System.out.println("Step 1. Add a new vertex source s and new edges with weight 0 from the source to every other vertex G");
