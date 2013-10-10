@@ -58,7 +58,7 @@ public class JacksonAllShortestPaths {
     private WeightedGraph reweightGraph(WeightedGraph graph, int[] distances) {
         WeightedGraph reweightedGraph = new WeightedGraph(graph.getV());
         for (Edge edge : graph.getAllEdges()) {
-            int newWeight = edge.getWeight() + distances[edge.getFrom()] - distances[edge.getTo()];
+            int newWeight = (int)edge.getWeight() + distances[edge.getFrom()] - distances[edge.getTo()];
             if (newWeight < 0)
                 System.out.println("[WARNING] New weight is negative " + newWeight);
             reweightedGraph.addEdge(new Edge(

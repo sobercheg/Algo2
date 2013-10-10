@@ -1,5 +1,7 @@
 package shortestpath;
 
+import util.Assert;
+
 /**
  * Created by Sobercheg on 10/4/13.
  */
@@ -22,11 +24,11 @@ public class BellmanFordShortestPathTest {
         wg.addEdge(new Edge(4, 2, 1)); // cycle
 
         BellmanFordShortestPath bellmanFordShortestPath = new BellmanFordShortestPath(wg, 0);
-        assert bellmanFordShortestPath.distTo(4) == 3 : "Path 0->4 must be 3";
-        assert bellmanFordShortestPath.distTo(2) == 1 : "Path 0->2 must be 1";
-        assert bellmanFordShortestPath.distTo(3) == 2 : "Path 0->3 must be 2";
+        Assert.equals(bellmanFordShortestPath.distTo(4), 3, "Path 0->4 must be 3");
+        Assert.equals(bellmanFordShortestPath.distTo(2), 1, "Path 0->2 must be 1");
+        Assert.equals(bellmanFordShortestPath.distTo(3), 2, "Path 0->3 must be 2");
 
-        assert !bellmanFordShortestPath.hasNegativeCycles() : "Should not report negative cycles";
+        Assert.assertFalse(bellmanFordShortestPath.hasNegativeCycles(), "Should not report negative cycles");
     }
 
     private void negativeWeight() {
@@ -37,10 +39,10 @@ public class BellmanFordShortestPathTest {
         wg.addEdge(new Edge(1, 3, -1));
 
         BellmanFordShortestPath bellmanFordShortestPath = new BellmanFordShortestPath(wg, 0);
-        assert bellmanFordShortestPath.distTo(3) == -3 : "Path 0->3 must be -3";
-        assert bellmanFordShortestPath.distTo(1) == -2 : "Path 0->1 must be -2";
+        Assert.equals(bellmanFordShortestPath.distTo(3), -3, "Path 0->3 must be -3");
+        Assert.equals(bellmanFordShortestPath.distTo(1), -2, "Path 0->1 must be -2");
 
-        assert !bellmanFordShortestPath.hasNegativeCycles() : "Should not report negative cycles";
+        Assert.assertFalse(bellmanFordShortestPath.hasNegativeCycles(),  "Should not report negative cycles");
 
     }
 
@@ -53,7 +55,7 @@ public class BellmanFordShortestPathTest {
         wg.addEdge(new Edge(2, 3, -1));
 
         BellmanFordShortestPath bellmanFordShortestPath = new BellmanFordShortestPath(wg, 0);
-        assert bellmanFordShortestPath.hasNegativeCycles() : "Should report a negative cycle";
+        Assert.assertTrue(bellmanFordShortestPath.hasNegativeCycles(), "Should report a negative cycle");
 
     }
 }

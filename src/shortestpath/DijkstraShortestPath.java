@@ -40,8 +40,8 @@ public class DijkstraShortestPath extends AbstractShortestPath {
         int v = vertex.getVertex();
         for (Edge e : graph.getEdges(v)) {
             int w = e.getTo();
-            if (distances[w] > distances[v] + e.getWeight()) {
-                distances[w] = distances[v] + e.getWeight();
+            if (distances[w] > distances[v] + (int)e.getWeight()) {
+                distances[w] = distances[v] + (int)e.getWeight();
                 edgeTo[w] = e;
                 VertexMarker adjacentVertexMarker = markerMap.get(w);
                 if (queue.contains(adjacentVertexMarker)) {
