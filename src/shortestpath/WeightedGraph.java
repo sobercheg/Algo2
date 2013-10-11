@@ -46,6 +46,16 @@ public class WeightedGraph {
         return inboundEdges[v];
     }
 
+    public Edge getEdge(int from, int to) {
+        if (edges[from] == null) return null;
+        for (Edge adjacent: edges[from]) {
+            if (adjacent.getTo() == to) {
+                return adjacent;
+            }
+        }
+        return null;
+    }
+
     public int getV() {
         return V;
     }
