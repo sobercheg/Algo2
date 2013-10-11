@@ -1,10 +1,12 @@
 package tsp;
 
+import com.google.common.collect.Sets;
 import util.Assert;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Sobercheg on 10/9/13.
@@ -16,7 +18,7 @@ public class TravelingSalesmanDynamicProgrammingTest {
     public static void main(String[] args) {
         TravelingSalesmanDynamicProgrammingTest test = new TravelingSalesmanDynamicProgrammingTest();
         test.testIndex();
-        test.testSubsets();
+//        test.testSubsets();
         test.testSolution();
     }
 
@@ -39,12 +41,26 @@ public class TravelingSalesmanDynamicProgrammingTest {
     }
 
     private void testSubsets() {
-        HashSet<Integer> source = new HashSet<Integer>();
-        source.add(0);
-        source.add(1);
-        source.add(2);
-        source.add(3);
-        System.out.println(tsp.getSubsetsOfSize(source, 2));
+        Set<Integer> source = new HashSet<Integer>();
+        int number = 25;
+        List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number];
+        for (int i = 0; i < number; i++) {
+            source.add(i);
+            sets[i] = new ArrayList<Set<Integer>>();
+        }
+
+        Set<Set<Integer>> powerSet = Sets.powerSet(source);
+        System.out.println("Adding [" + powerSet.size() + "] sets to the array...");
+        int counter = 0;
+        for (Set<Integer> set : powerSet) {
+            if (counter % 10000 == 0) System.out.println("[" + counter + "]");
+            sets[set.size()].add(set);
+            counter++;
+        }
+
+        for (int i = 0; i < number; i++)
+            System.out.println("# of subsets of size [" + i + "] is [" + sets[i].size() + "]");
+
     }
 
 }

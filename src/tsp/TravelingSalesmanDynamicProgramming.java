@@ -1,5 +1,6 @@
 package tsp;
 
+import com.google.common.collect.Sets;
 import shortestpath.Edge;
 import shortestpath.WeightedGraph;
 
@@ -38,50 +39,63 @@ public class TravelingSalesmanDynamicProgramming {
     }
 
     public double minimumCost() {
-        int subsetNum = (int) Math.pow(2, graph.getV());
-        System.out.println("Initializing solution matrix of size[" + subsetNum + "][" + graph.getV() + "]...");
-        double A[][] = new double[subsetNum][graph.getV()];
+        int number = graph.getV();
+        Map<Integer, Double>[] A = (Map<Integer, Double>[]) new Map[number];
         // Step 1. Init the solution matrix
         for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[i].length; j++) {
-                A[i][j] = Double.POSITIVE_INFINITY;
-            }
+            A[i] = new HashMap<Integer, Double>();
         }
 
-        A[getIndex(0)][0] = 0;
-        System.out.println("Initialized solution matrix successfully");
+        A[0].put(getIndex(0), 0D);
 
+        List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number + 1];
         Set<Integer> initialSet = new HashSet<Integer>();
         for (int i = 0; i < graph.getV(); i++) {
             initialSet.add(i);
+            sets[i] = new ArrayList<Set<Integer>>();
+        }
+
+        Set<Set<Integer>> powerSet = Sets.powerSet(initialSet);
+        System.out.println("Adding [" + powerSet.size() + "] sets to the array...");
+        int counter = 0;
+        for (Set<Integer> set : powerSet) {
+            if (counter % 10000 == 0) System.out.println("[" + counter + "]");
+            if (set == null) continue;
+            sets[set.size()].add(set);
+            counter++;
         }
 
         for (int m = 2; m <= graph.getV(); m++) {
             System.out.println("Subset size=" + m);
-            for (Set<Integer> subset : getSubsetsOfSize(initialSet, m)) {
+            for (Set<Integer> subset : sets[m]) {
+                if (subset == null) continue;
                 if (!subset.contains(0)) continue;
+                int subsetIndex = getIndex(subset);
                 for (int j : subset) {
                     if (j == 0) continue;
                     Set<Integer> subsetMinusJ = new HashSet<Integer>(subset);
                     subsetMinusJ.remove(j);
+                    int subsetMinusJIndex = getIndex(subsetMinusJ);
                     double bestSolution = Double.POSITIVE_INFINITY;
                     for (int k : subset) {
                         if (k == j) continue;
                         Edge kjEdge = graph.getEdge(k, j);
                         double edgeCost = kjEdge == null ? Double.POSITIVE_INFINITY : kjEdge.getWeight();
-                        double previousSolution = A[getIndex(subsetMinusJ)][k] + edgeCost;
+                        if (!A[k].containsKey(subsetMinusJIndex)) A[k].put(subsetMinusJIndex, Double.POSITIVE_INFINITY);
+                        double previousSolution = A[k].get(subsetMinusJIndex) + edgeCost;
                         if (previousSolution < bestSolution) {
                             bestSolution = previousSolution;
-                            A[getIndex(subset)][j] = bestSolution;
+                            A[j].put(subsetIndex, bestSolution);
                         }
                     }
                 }
             }
         }
 
+        int initialSetIndex = getIndex(initialSet);
         double minSolution = Double.POSITIVE_INFINITY;
         for (int i = 1; i < graph.getV(); i++) {
-            double solution = A[getIndex(initialSet)][i] + graph.getEdge(i, 0).getWeight();
+            double solution = A[i].get(initialSetIndex) + graph.getEdge(i, 0).getWeight();
             if (solution < minSolution) {
                 minSolution = solution;
             }

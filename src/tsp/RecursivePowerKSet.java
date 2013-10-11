@@ -6,6 +6,7 @@ import java.util.Set;
 
 class RecursivePowerKSet
 {
+
     static public <E> Set<Set<E>> computeKPowerSet(final Set<E> source, final int k)
     {
         if (k==0 || source.size() < k) {
