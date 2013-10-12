@@ -80,27 +80,30 @@ public class TravelingSalesmanDynamicProgramming {
             if (A[m - 2] != null) A[m - 2] = null;
             System.out.println("Subset size=" + m);
             sets[m - 1] = null; // GC optimization
+
             for (Set<Integer> subset : sets[m]) {
                 if (subset == null) continue;
                 if (!subset.contains(0)) continue;
                 int subsetIndex = getIndex(subset);
                 for (int j : subset) {
                     if (j == 0) continue;
+
+                    // set best solution
                     int subsetMinusJIndex = getIndexButOne(subset, j);
                     double bestSolution = Double.POSITIVE_INFINITY;
+                    if (A[m][j] == null) A[m][j] = new HashMap<Integer, Double>();
                     for (int k : subset) {
                         if (k == j) continue;
-
                         double previousSolution = ((A[m - 1][k] != null && A[m - 1][k].containsKey(subsetMinusJIndex)) ?
                                 A[m - 1][k].get(subsetMinusJIndex) : Double.POSITIVE_INFINITY) + weights[k][j];
                         if (previousSolution <= bestSolution) {
                             bestSolution = previousSolution;
-                            A[m][j] = new HashMap<Integer, Double>();
-                            A[m][j].put(subsetIndex, bestSolution);
                         }
                     }
+                    A[m][j].put(subsetIndex, bestSolution);
                 }
             }
+
         }
 
         int initialSetIndex = getIndex(initialSet);
