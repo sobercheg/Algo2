@@ -39,13 +39,14 @@ public class TravelingSalesmanDynamicProgramming {
 
     public double minimumCost() {
         int number = graph.getV();
-        Map<Integer, Double>[][] A = (Map<Integer, Double>[][]) new Map[number + 1][number];
+        Map<Integer, Double>[] Aprev = (Map<Integer, Double>[]) new Map[number];
+        Map<Integer, Double>[] A = (Map<Integer, Double>[]) new Map[number];
         // Step 1. Init the solution matrix
-        for (int i = 0; i < A[0].length; i++) {
-            A[1][i] = new HashMap<Integer, Double>();
+        for (int i = 0; i < Aprev.length; i++) {
+            Aprev[i] = new HashMap<Integer, Double>();
         }
 
-        A[1][0].put(getIndex(0), 0D);
+        Aprev[0].put(getIndex(0), 0D);
 
         List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number + 1];
         Set<Integer> initialSet = new HashSet<Integer>();
@@ -91,25 +92,25 @@ public class TravelingSalesmanDynamicProgramming {
                     // set best solution
                     int subsetMinusJIndex = getIndexButOne(subset, j);
                     double bestSolution = Double.POSITIVE_INFINITY;
-                    if (A[m][j] == null) A[m][j] = new HashMap<Integer, Double>();
+                    if (A[j] == null) A[j] = new HashMap<Integer, Double>();
                     for (int k : subset) {
                         if (k == j) continue;
-                        double previousSolution = ((A[m - 1][k] != null && A[m - 1][k].containsKey(subsetMinusJIndex)) ?
-                                A[m - 1][k].get(subsetMinusJIndex) : Double.POSITIVE_INFINITY) + weights[k][j];
+                        double previousSolution = ((Aprev[k] != null && Aprev[k].containsKey(subsetMinusJIndex)) ?
+                                Aprev[k].get(subsetMinusJIndex) : Double.POSITIVE_INFINITY) + weights[k][j];
                         if (previousSolution <= bestSolution) {
                             bestSolution = previousSolution;
                         }
                     }
-                    A[m][j].put(subsetIndex, bestSolution);
+                    A[j].put(subsetIndex, bestSolution);
                 }
             }
-
+         Aprev = A;
         }
 
         int initialSetIndex = getIndex(initialSet);
         double minSolution = Double.POSITIVE_INFINITY;
         for (int i = 1; i < number; i++) {
-            double solution = A[number][i].get(initialSetIndex) + graph.getEdge(i, 0).getWeight();
+            double solution = A[i].get(initialSetIndex) + graph.getEdge(i, 0).getWeight();
             if (solution < minSolution) {
                 minSolution = solution;
             }
