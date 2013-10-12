@@ -43,11 +43,12 @@ public class TravelingSalesmanDynamicProgrammingTest {
     private void testSubsets() {
         Set<Integer> source = new HashSet<Integer>();
         int number = 25;
-        List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number];
+        List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number + 1];
         for (int i = 0; i < number; i++) {
             source.add(i);
             sets[i] = new ArrayList<Set<Integer>>();
         }
+        sets[number] = new ArrayList<Set<Integer>>();
 
         Set<Set<Integer>> powerSet = Sets.powerSet(source);
         System.out.println("Adding [" + powerSet.size() + "] sets to the array...");
