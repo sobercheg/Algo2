@@ -1,5 +1,8 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;

@@ -1,5 +1,7 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
 import util.Assert;
 
 /**

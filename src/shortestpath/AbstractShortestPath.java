@@ -1,5 +1,8 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 

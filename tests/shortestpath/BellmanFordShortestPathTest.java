@@ -1,5 +1,7 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
 import util.Assert;
 
 /**
@@ -42,7 +44,7 @@ public class BellmanFordShortestPathTest {
         Assert.equals(bellmanFordShortestPath.distTo(3), -3, "Path 0->3 must be -3");
         Assert.equals(bellmanFordShortestPath.distTo(1), -2, "Path 0->1 must be -2");
 
-        Assert.assertFalse(bellmanFordShortestPath.hasNegativeCycles(),  "Should not report negative cycles");
+        Assert.assertFalse(bellmanFordShortestPath.hasNegativeCycles(), "Should not report negative cycles");
 
     }
 

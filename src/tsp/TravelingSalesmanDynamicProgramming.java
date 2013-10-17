@@ -1,10 +1,9 @@
 package tsp;
 
 import com.google.common.collect.Sets;
-import shortestpath.Edge;
-import shortestpath.WeightedGraph;
+import graph.Edge;
+import graph.WeightedGraph;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.util.*;
@@ -42,9 +41,11 @@ public class TravelingSalesmanDynamicProgramming {
         int number = graph.getV();
         Map<Integer, Double>[] A = (Map<Integer, Double>[]) new Map[number];
         Map<Integer, Double>[] Aprev = (Map<Integer, Double>[]) new Map[number];
+
         // Step 1. Init the solution matrix
         for (int i = 0; i < A.length; i++) {
             Aprev[i] = new HashMap<Integer, Double>();
+            A[i] = new HashMap<Integer, Double>();
         }
 
         Aprev[0].put(getIndex(0), 0D);
@@ -62,13 +63,9 @@ public class TravelingSalesmanDynamicProgramming {
         int counter = 0;
         for (Set<Integer> set : powerSet) {
             if (counter % 10000 == 0) System.out.println("[" + counter + "]");
-            if (set == null) continue;
-            if (set.size() >= sets.length)
-                System.out.println("set.size() >= sets.length " + set.size() + " >= " + sets.length);
             sets[set.size()].add(set);
             counter++;
         }
-        powerSet = null;
 
         double weights[][] = new double[number][number];
         for (int i = 0; i < number; i++) {
@@ -81,30 +78,53 @@ public class TravelingSalesmanDynamicProgramming {
         for (int m = 2; m <= graph.getV(); m++) {
             System.out.println("Subset size=" + m);
             sets[m - 1] = null; // GC optimization
+            A = (Map<Integer, Double>[]) new Map[number];
             for (int i = 0; i < A.length; i++) {
                 A[i] = new HashMap<Integer, Double>();
             }
-            System.gc();
             for (Set<Integer> subset : sets[m]) {
                 if (subset == null) continue;
                 if (!subset.contains(0)) continue;
                 int subsetIndex = getIndex(subset);
+
+             /*   double[][] indexMap = new double[number][2];
+                int ind = 0;
+                for (int setValue1 : subset) {
+                    if (setValue1 == 0) continue;
+                    for (int setValue2 : subset) {
+                        if (setValue1 == setValue2) continue;
+                        if (ind == indexMap.length) {
+                            double[] temp = new double[indexMap[setValue2].length * 2];
+                            System.arraycopy(indexMap[setValue2], 0, temp, 0, indexMap.length);
+                            indexMap[setValue2] = temp;
+                        }
+                        int subsetMinusJIndex = getIndexButOne(subset, setValue1);
+                        indexMap[setValue2][ind++] = subsetMinusJIndex;
+                    }
+                }*/
+
                 for (int j : subset) {
                     if (j == 0) continue;
                     int subsetMinusJIndex = getIndexButOne(subset, j);
                     double bestSolution = Double.POSITIVE_INFINITY;
                     for (int k : subset) {
                         if (k == j) continue;
-                        double previousSolution = ((Aprev[k] != null && Aprev[k].containsKey(subsetMinusJIndex)) ?
-                                Aprev[k].get(subsetMinusJIndex) : Double.POSITIVE_INFINITY) + weights[k][j];
+                        double previousSolution = (Aprev[k].containsKey(subsetMinusJIndex)) ?
+                                (Aprev[k].get(subsetMinusJIndex) + weights[k][j]) : Double.POSITIVE_INFINITY;
                         if (previousSolution <= bestSolution) {
                             bestSolution = previousSolution;
-                            A[j].put(subsetIndex, bestSolution);
                         }
                     }
+                    A[j].put(subsetIndex, bestSolution);
                 }
             }
-            System.arraycopy(A, 0, Aprev, 0, A.length);
+            System.out.print("m=" + m + ": ");
+            System.out.println("Map size=" + A[1].size() + "; maps=" + number + "; " + (A[1].size() * number * 12 / 1024 / 1024) + " MB");
+           /* for (int i = 0;i<A.length; i++) {
+                Aprev[i] = A[i];
+            }*/
+            Aprev = A;
+
         }
 
         int initialSetIndex = getIndex(initialSet);
@@ -174,6 +194,34 @@ public class TravelingSalesmanDynamicProgramming {
                 "27153.6111 13203.3333\n" +
                 "27166.6667 9833.3333\n" +
                 "27233.3333 10450.0000\n"));
+
+  /*      Scanner scanner = new Scanner(new StringReader("24\n" +
+                "20833.3333 17100.0000\n" +
+                "20900.0000 17066.6667\n" +
+                "21300.0000 13016.6667\n" +
+                "21600.0000 14150.0000\n" +
+                "21600.0000 14966.6667\n" +
+                "21600.0000 16500.0000\n" +
+                "22183.3333 13133.3333\n" +
+                "22583.3333 14300.0000\n" +
+                "22683.3333 12716.6667\n" +
+                "23616.6667 15866.6667\n" +
+                "23700.0000 15933.3333\n" +
+                "23883.3333 14533.3333\n" +
+                "24166.6667 13250.0000\n" +
+                "25149.1667 12365.8333\n" +
+                "26133.3333 14500.0000\n" +
+                "26150.0000 10550.0000\n" +
+                "26283.3333 12766.6667\n" +
+                "26433.3333 13433.3333\n" +
+                "26550.0000 13850.0000\n" +
+                "26733.3333 11683.3333\n" +
+                "27026.1111 13051.9444\n" +
+                "27126.1111 13151.9444\n" +
+                "23126.1111 12151.9444\n" +
+                "27233.3333 10450.0000\n"));
+*/
+
         int V = scanner.nextInt();
         List<Point> points = new ArrayList<Point>(V);
         for (int i = 0; i < V; i++) {

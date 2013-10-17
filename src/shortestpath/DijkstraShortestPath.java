@@ -1,5 +1,8 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;

@@ -1,5 +1,8 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
+
 import java.util.Arrays;
 
 /**
@@ -15,10 +18,10 @@ public class JacksonAllShortestPathsTest {
     // So, it does not fail if the logic is incorrect!
     private void basic() {
         WeightedGraph graph = new WeightedGraph(4);
-        graph.addEdge(new Edge(0,1, -1));
-        graph.addEdge(new Edge(0,2, -1));
-        graph.addEdge(new Edge(1,3, -1));
-        graph.addEdge(new Edge(2,3, -4));
+        graph.addEdge(new Edge(0, 1, -1));
+        graph.addEdge(new Edge(0, 2, -1));
+        graph.addEdge(new Edge(1, 3, -1));
+        graph.addEdge(new Edge(2, 3, -4));
 
         JacksonAllShortestPaths jacksonAllShortestPaths = new JacksonAllShortestPaths(graph);
         System.out.println(Arrays.deepToString(jacksonAllShortestPaths.getAllShortestPaths()));

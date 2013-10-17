@@ -1,4 +1,4 @@
-package shortestpath;
+package graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,16 @@ public class WeightedGraph {
             edgeList.addAll(vertexEdges);
         }
         return edgeList;
+    }
+
+    public WeightedGraph reverse() {
+        WeightedGraph reversedGraph = new WeightedGraph(V);
+        for (List<Edge> edgeList : edges) {
+            for (Edge edge : edgeList) {
+                reversedGraph.addEdge(new Edge(edge.getTo(), edge.getFrom(), edge.getWeight()));
+            }
+        }
+        return reversedGraph;
     }
 
     public List<Edge> getInboundEdges(int v) {

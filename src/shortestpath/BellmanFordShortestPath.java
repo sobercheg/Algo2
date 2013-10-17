@@ -1,5 +1,8 @@
 package shortestpath;
 
+import graph.Edge;
+import graph.WeightedGraph;
+
 /**
  * Created by Sobercheg on 10/4/13.
  */
@@ -15,7 +18,7 @@ public class BellmanFordShortestPath extends AbstractShortestPath {
     }
 
     public boolean hasNegativeCycles() {
-        for (Edge edge: graph.getAllEdges()) {
+        for (Edge edge : graph.getAllEdges()) {
             if (distances[edge.getTo()] > distances[edge.getFrom()] + edge.getWeight()) return true;
         }
         return false;
@@ -25,8 +28,8 @@ public class BellmanFordShortestPath extends AbstractShortestPath {
         int v = edge.getFrom();
         int w = edge.getTo();
         if (distances[v] == Integer.MAX_VALUE) return;
-        if (distances[w] > distances[v] + (int)edge.getWeight()) {
-            distances[w] = distances[v] + (int)edge.getWeight();
+        if (distances[w] > distances[v] + (int) edge.getWeight()) {
+            distances[w] = distances[v] + (int) edge.getWeight();
             edgeTo[w] = edge;
         }
     }

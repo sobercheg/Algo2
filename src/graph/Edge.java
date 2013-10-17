@@ -1,4 +1,4 @@
-package shortestpath;
+package graph;
 
 /**
  * Created by Sobercheg on 10/3/13.
@@ -35,5 +35,10 @@ public class Edge implements Comparable<Edge> {
     @Override
     public int compareTo(Edge o) {
         return Double.compare(weight, o.weight);
+    }
+
+    @Override
+    public String toString() {
+        return "" + from + "->" + to + ":" + weight;
     }
 }
