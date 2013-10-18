@@ -13,7 +13,8 @@ import java.util.*;
  * Created by Sobercheg on 10/9/13.
  */
 public class TravelingSalesmanDynamicProgramming {
-
+    private static final int BUCKETS = 31;
+    private static final int MAX_WEIGHT_HEURISTIC = 3500;
     private WeightedGraph graph;
 
     public TravelingSalesmanDynamicProgramming(WeightedGraph graph) {
@@ -39,16 +40,17 @@ public class TravelingSalesmanDynamicProgramming {
 
     public double minimumCost() {
         int number = graph.getV();
-        Map<Integer, Double>[] A = (Map<Integer, Double>[]) new Map[number];
-        Map<Integer, Double>[] Aprev = (Map<Integer, Double>[]) new Map[number];
+        Map<Integer, Double>[][] A = (Map<Integer, Double>[][]) new Map[number][BUCKETS];
+        Map<Integer, Double>[][] Aprev = (Map<Integer, Double>[][]) new Map[number][BUCKETS];
 
         // Step 1. Init the solution matrix
-        for (int i = 0; i < A.length; i++) {
-            Aprev[i] = new HashMap<Integer, Double>();
-            A[i] = new HashMap<Integer, Double>();
+        for (int b = 0; b < BUCKETS; b++) {
+            for (int i = 0; i < A.length; i++) {
+                Aprev[i][b] = new HashMap<Integer, Double>();
+                A[i][b] = new HashMap<Integer, Double>();
+            }
         }
-
-        Aprev[0].put(getIndex(0), 0D);
+        put(Aprev[0], getIndex(0), 0D);
 
         List<Set<Integer>>[] sets = (List<Set<Integer>>[]) new List[number + 1];
         Set<Integer> initialSet = new HashSet<Integer>();
@@ -75,33 +77,22 @@ public class TravelingSalesmanDynamicProgramming {
             }
         }
 
+        int heuristicSkipped = 0;
+        int heuristicHit = 0;
         for (int m = 2; m <= graph.getV(); m++) {
             System.out.println("Subset size=" + m);
             sets[m - 1] = null; // GC optimization
-            A = (Map<Integer, Double>[]) new Map[number];
-            for (int i = 0; i < A.length; i++) {
-                A[i] = new HashMap<Integer, Double>();
+            A = (Map<Integer, Double>[][]) new Map[number][BUCKETS];
+            for (int b = 0; b < BUCKETS; b++) {
+
+                for (int i = 0; i < A.length; i++) {
+                    A[i][b] = new HashMap<Integer, Double>();
+                }
             }
             for (Set<Integer> subset : sets[m]) {
                 if (subset == null) continue;
                 if (!subset.contains(0)) continue;
                 int subsetIndex = getIndex(subset);
-
-             /*   double[][] indexMap = new double[number][2];
-                int ind = 0;
-                for (int setValue1 : subset) {
-                    if (setValue1 == 0) continue;
-                    for (int setValue2 : subset) {
-                        if (setValue1 == setValue2) continue;
-                        if (ind == indexMap.length) {
-                            double[] temp = new double[indexMap[setValue2].length * 2];
-                            System.arraycopy(indexMap[setValue2], 0, temp, 0, indexMap.length);
-                            indexMap[setValue2] = temp;
-                        }
-                        int subsetMinusJIndex = getIndexButOne(subset, setValue1);
-                        indexMap[setValue2][ind++] = subsetMinusJIndex;
-                    }
-                }*/
 
                 for (int j : subset) {
                     if (j == 0) continue;
@@ -109,20 +100,29 @@ public class TravelingSalesmanDynamicProgramming {
                     double bestSolution = Double.POSITIVE_INFINITY;
                     for (int k : subset) {
                         if (k == j) continue;
-                        double previousSolution = (Aprev[k].containsKey(subsetMinusJIndex)) ?
-                                (Aprev[k].get(subsetMinusJIndex) + weights[k][j]) : Double.POSITIVE_INFINITY;
+                        // heuristic
+                        if (weights[k][j] > MAX_WEIGHT_HEURISTIC) {
+                            heuristicSkipped++;
+                            if (heuristicSkipped % 1000000 == 0)
+                                System.out.println("Heuristic skipped " + heuristicSkipped);
+                            continue;
+                        }
+                        heuristicHit++;
+                        if (heuristicHit % 1000000 == 0) System.out.println("Heuristic hit " + heuristicHit);
+
+                        Double value = get(Aprev[k], subsetMinusJIndex);
+                        double previousSolution = (value != null) ?
+                                (value + weights[k][j]) : Double.POSITIVE_INFINITY;
                         if (previousSolution <= bestSolution) {
                             bestSolution = previousSolution;
                         }
                     }
-                    A[j].put(subsetIndex, bestSolution);
+                    put(A[j], subsetIndex, bestSolution);
                 }
             }
-            System.out.print("m=" + m + ": ");
-            System.out.println("Map size=" + A[1].size() + "; maps=" + number + "; " + (A[1].size() * number * 12 / 1024 / 1024) + " MB");
-           /* for (int i = 0;i<A.length; i++) {
-                Aprev[i] = A[i];
-            }*/
+            System.out.println("m=" + m + ": ");
+            for (int b = 0; b < BUCKETS; b++)
+                System.out.println("Map [" + b + "] size=" + A[1][b].size() + "; " + (A[1][b].size() * number * 12 / 1024 / 1024) + " MB");
             Aprev = A;
 
         }
@@ -130,13 +130,21 @@ public class TravelingSalesmanDynamicProgramming {
         int initialSetIndex = getIndex(initialSet);
         double minSolution = Double.POSITIVE_INFINITY;
         for (int i = 1; i < number; i++) {
-            double solution = A[i].get(initialSetIndex) + graph.getEdge(i, 0).getWeight();
+            double solution = get(A[i], initialSetIndex) + graph.getEdge(i, 0).getWeight();
             if (solution < minSolution) {
                 minSolution = solution;
             }
         }
 
         return minSolution;
+    }
+
+    private void put(Map<Integer, Double>[] maps, int key, double value) {
+        maps[key % BUCKETS].put(key, value);
+    }
+
+    private Double get(Map<Integer, Double>[] maps, int key) {
+        return maps[key % BUCKETS].get(key);
     }
 
     int getIndex(Integer... vertices) {
@@ -168,10 +176,10 @@ public class TravelingSalesmanDynamicProgramming {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new StringReader("25\n" +
-                "20833.3333 17100.0000\n" +
-                "20900.0000 17066.6667\n" +
-                "21300.0000 13016.6667\n" +
+        Scanner scanner = new Scanner(new StringReader("22\n" +
+//                "20833.3333 17100.0000\n" +
+//                "20900.0000 17066.6667\n" +
+//                "21300.0000 13016.6667\n" +
                 "21600.0000 14150.0000\n" +
                 "21600.0000 14966.6667\n" +
                 "21600.0000 16500.0000\n" +
