@@ -40,7 +40,6 @@ public class HeapMedian {
             maxHeap = tmp;
         }
 
-
         // queue balancing
         if (maxHeap.size() - minHeap.size() > 1) {
             minHeap.offer(maxHeap.poll());
@@ -72,6 +71,11 @@ public class HeapMedian {
         System.out.println("{2,3} median: " + median.getCurrentMedian());
         median.addElement(4);
         System.out.println("{2,3,4} median: " + median.getCurrentMedian());
+        median.addElement(5);
+        System.out.println("{2,3,4,5} median: " + median.getCurrentMedian());
+        median.addElement(6);
+        System.out.println("{2,3,4,5,6} median: " + median.getCurrentMedian());
+
 
     }
 
