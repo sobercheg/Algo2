@@ -13,8 +13,8 @@ import java.util.*;
  * Created by Sobercheg on 10/9/13.
  */
 public class TravelingSalesmanDynamicProgramming {
-    private static final int BUCKETS = 31;
-    private static final int MAX_WEIGHT_HEURISTIC = 3500;
+    private static final int BUCKETS = 1;
+    private static final int MAX_WEIGHT_HEURISTIC = 2300;
     private WeightedGraph graph;
 
     public TravelingSalesmanDynamicProgramming(WeightedGraph graph) {
@@ -39,6 +39,7 @@ public class TravelingSalesmanDynamicProgramming {
     }
 
     public double minimumCost() {
+        long startTime = System.currentTimeMillis();
         int number = graph.getV();
         Map<Integer, Double>[][] A = (Map<Integer, Double>[][]) new Map[number][BUCKETS];
         Map<Integer, Double>[][] Aprev = (Map<Integer, Double>[][]) new Map[number][BUCKETS];
@@ -102,14 +103,15 @@ public class TravelingSalesmanDynamicProgramming {
                         if (k == j) continue;
                         // heuristic
                         if (weights[k][j] > MAX_WEIGHT_HEURISTIC) {
-                            heuristicSkipped++;
+                 /*           heuristicSkipped++;
                             if (heuristicSkipped % 1000000 == 0)
                                 System.out.println("Heuristic skipped " + heuristicSkipped);
+                 */
                             continue;
                         }
-                        heuristicHit++;
+                   /*     heuristicHit++;
                         if (heuristicHit % 1000000 == 0) System.out.println("Heuristic hit " + heuristicHit);
-
+*/
                         Double value = get(Aprev[k], subsetMinusJIndex);
                         double previousSolution = (value != null) ?
                                 (value + weights[k][j]) : Double.POSITIVE_INFINITY;
@@ -126,6 +128,9 @@ public class TravelingSalesmanDynamicProgramming {
             Aprev = A;
 
         }
+
+        System.out.println("Processing time " + ((System.currentTimeMillis() - startTime) / 1000) + "s");
+
 
         int initialSetIndex = getIndex(initialSet);
         double minSolution = Double.POSITIVE_INFINITY;
@@ -176,10 +181,10 @@ public class TravelingSalesmanDynamicProgramming {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new StringReader("22\n" +
+        Scanner scanner = new Scanner(new StringReader("23\n" +
 //                "20833.3333 17100.0000\n" +
-//                "20900.0000 17066.6667\n" +
-//                "21300.0000 13016.6667\n" +
+                "20900.0000 17066.6667\n" +
+                "21300.0000 13016.6667\n" +
                 "21600.0000 14150.0000\n" +
                 "21600.0000 14966.6667\n" +
                 "21600.0000 16500.0000\n" +
